@@ -1,9 +1,7 @@
 "use client";
-
 import classnames from "classnames";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import React from "react";
 import { BiTaskX } from "react-icons/bi";
 
 const NavBar = () => {
