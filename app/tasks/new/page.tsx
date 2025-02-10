@@ -33,6 +33,17 @@ const NewTaskPage = () => {
     resolver: zodResolver(createTaskSchema),
   });
 
+  const onSubmit = handleSubmit(async (data) => {
+    try {
+      setLoading(true);
+      await axios.post("/api/tasks", data);
+      router.push("/tasks");
+    } catch (error) {
+      setLoading(false);
+      setError("An error occurred. Please try again later.");
+    }
+  });
+
   return (
     <div className="max-w-xl">
       {error && (
@@ -40,19 +51,7 @@ const NewTaskPage = () => {
           <Callout.Text>{error}</Callout.Text>
         </Callout.Root>
       )}
-      <form
-        className="space-y-3"
-        onSubmit={handleSubmit(async (data) => {
-          try {
-            setLoading(true);
-            await axios.post("/api/tasks", data);
-            router.push("/tasks");
-          } catch (error) {
-            setLoading(false);
-            setError("An error occurred. Please try again later.");
-          }
-        })}
-      >
+      <form className="space-y-3" onSubmit={onSubmit}>
         <TextField.Root placeholder="Title" {...register("title")} />
         <ErrorMessage>{errors.title?.message}</ErrorMessage>
         <Controller
