@@ -8,6 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { createTaskSchema } from "@/app/validationSchemas";
 import { z } from "zod";
 import ErrorMessage from "@/app/components/ErrorMessage";
+import Spinner from "@/app/components/Spinner";
 //import SimpleMDE from "react-simplemde-editor";
 // We need to import like this in cases where components are not compatible with server-side rendering.
 import dynamic from "next/dynamic";
@@ -21,6 +22,8 @@ type TaskForm = z.infer<typeof createTaskSchema>;
 const NewTaskPage = () => {
   const router = useRouter();
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
   const {
     register,
     control,
@@ -41,9 +44,11 @@ const NewTaskPage = () => {
         className="space-y-3"
         onSubmit={handleSubmit(async (data) => {
           try {
+            setLoading(true);
             await axios.post("/api/tasks", data);
             router.push("/tasks");
           } catch (error) {
+            setLoading(false);
             setError("An error occurred. Please try again later.");
           }
         })}
@@ -59,7 +64,9 @@ const NewTaskPage = () => {
         />
         <ErrorMessage>{errors.description?.message}</ErrorMessage>
 
-        <Button>Submit New Task</Button>
+        <Button disabled={loading}>
+          Submit New Task {loading && <Spinner />}
+        </Button>
       </form>
     </div>
   );
