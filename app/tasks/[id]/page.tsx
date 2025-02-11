@@ -1,4 +1,6 @@
+import TaskStatusBadge from "@/app/components/TaskStatusBadge";
 import { prisma } from "@/lib/prisma";
+import { Card, Flex, Heading, Text } from "@radix-ui/themes";
 import { notFound } from "next/navigation";
 import React from "react";
 
@@ -16,10 +18,12 @@ const TaskDetailPage = async ({ params }: Props) => {
 
   return (
     <div>
-      <p>{task.title}</p>
-      <p>{task.description}</p>
-      <p>{task.status}</p>
-      <p>{task.createdAt.toDateString()}</p>
+      <Heading>{task.title}</Heading>
+      <Flex gap="3" my="2">
+        <TaskStatusBadge status={task.status} />
+        <Text>{task.createdAt.toDateString()}</Text>
+      </Flex>
+      <Card>{task.description}</Card>
     </div>
   );
 };
