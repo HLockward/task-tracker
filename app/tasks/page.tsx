@@ -2,6 +2,7 @@ import { Table } from "@radix-ui/themes";
 import { prisma } from "@/lib/prisma";
 import TaskStatusBadge from "../components/TaskStatusBadge";
 import TaskActions from "./TaskActions";
+import Link from "next/link";
 
 const Tasks = async () => {
   const tasks = await prisma.task.findMany();
@@ -24,7 +25,7 @@ const Tasks = async () => {
           {tasks.map((task) => (
             <Table.Row key={task.id}>
               <Table.Cell>
-                {task.title}
+                <Link href={`/tasks/${task.id}`}>{task.title}</Link>
                 <div className="block md:hidden">
                   <TaskStatusBadge status={task.status} />
                 </div>
