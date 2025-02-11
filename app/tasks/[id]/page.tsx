@@ -2,7 +2,7 @@ import TaskStatusBadge from "@/app/components/TaskStatusBadge";
 import { prisma } from "@/lib/prisma";
 import { Card, Flex, Heading, Text } from "@radix-ui/themes";
 import { notFound } from "next/navigation";
-import React from "react";
+import ReactMarkdown from "react-markdown";
 
 interface Props {
   params: { id: string };
@@ -23,7 +23,9 @@ const TaskDetailPage = async ({ params }: Props) => {
         <TaskStatusBadge status={task.status} />
         <Text>{task.createdAt.toDateString()}</Text>
       </Flex>
-      <Card>{task.description}</Card>
+      <Card className="prose" mt="4">
+        <ReactMarkdown>{task.description}</ReactMarkdown>
+      </Card>
     </div>
   );
 };
