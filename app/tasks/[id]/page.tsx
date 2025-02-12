@@ -1,4 +1,4 @@
-import TaskStatusBadge from "@/app/components/TaskStatusBadge";
+import { TaskStatusBadge } from "@/app/components";
 import { prisma } from "@/lib/prisma";
 import { Card, Flex, Heading, Text } from "@radix-ui/themes";
 import { notFound } from "next/navigation";

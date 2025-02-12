@@ -1,8 +1,7 @@
-import { Table } from "@radix-ui/themes";
+import { Link, TaskStatusBadge } from "@/app/components";
 import { prisma } from "@/lib/prisma";
-import TaskStatusBadge from "../../components/TaskStatusBadge";
+import { Table } from "@radix-ui/themes";
 import TaskActions from "./TaskActions";
-import Link from "../../components/Link";
 
 const Tasks = async () => {
   const tasks = await prisma.task.findMany();
