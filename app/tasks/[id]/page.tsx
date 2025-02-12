@@ -1,10 +1,8 @@
-import { TaskStatusBadge } from "@/app/components";
 import { prisma } from "@/lib/prisma";
-import { Box, Button, Card, Flex, Grid, Heading, Text } from "@radix-ui/themes";
-import Link from "next/link";
+import { Box, Grid } from "@radix-ui/themes";
 import { notFound } from "next/navigation";
-import ReactMarkdown from "react-markdown";
-import { Pencil2Icon } from "@radix-ui/react-icons";
+import EditTaskButton from "./EditTaskButton";
+import TaskDetails from "./TaskDetails";
 
 interface Props {
   params: { id: string };
@@ -21,20 +19,10 @@ const TaskDetailPage = async ({ params }: Props) => {
   return (
     <Grid columns={{ initial: "1", md: "2" }} gap="5">
       <Box>
-        <Heading>{task.title}</Heading>
-        <Flex gap="3" my="2">
-          <TaskStatusBadge status={task.status} />
-          <Text>{task.createdAt.toDateString()}</Text>
-        </Flex>
-        <Card className="prose" mt="4">
-          <ReactMarkdown>{task.description}</ReactMarkdown>
-        </Card>
+        <TaskDetails task={task} />
       </Box>
       <Box>
-        <Button>
-          <Pencil2Icon />
-          <Link href={`/tasks/${task.id}/edit`}>Edit Task</Link>
-        </Button>
+        <EditTaskButton taskId={task.id} />
       </Box>
     </Grid>
   );
