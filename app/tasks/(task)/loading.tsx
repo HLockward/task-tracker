@@ -1,6 +1,6 @@
 import { Table } from "@radix-ui/themes";
-import Skeleton from "react-loading-skeleton";
 import TaskActions from "./TaskActions";
+import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 
 const LoadingTasksPage = () => {
