@@ -1,6 +1,6 @@
 "use client";
 import { ErrorMessage, Spinner } from "@/app/components";
-import { createTaskSchema } from "@/app/validationSchemas";
+import { taskSchema } from "@/app/validationSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Callout, TextField } from "@radix-ui/themes";
 import axios from "axios";
@@ -17,7 +17,7 @@ const SimpleMDE = dynamic(() => import("react-simplemde-editor"), {
   ssr: false,
 });
 
-type TaskFormData = z.infer<typeof createTaskSchema>;
+type TaskFormData = z.infer<typeof taskSchema>;
 
 const TaskForm = ({ task }: { task?: Task }) => {
   const router = useRouter();
@@ -30,7 +30,7 @@ const TaskForm = ({ task }: { task?: Task }) => {
     handleSubmit,
     formState: { errors },
   } = useForm<TaskFormData>({
-    resolver: zodResolver(createTaskSchema),
+    resolver: zodResolver(taskSchema),
   });
 
   const onSubmit = handleSubmit(async (data) => {

@@ -2,19 +2,32 @@ import { taskSchema } from "@/app/validationSchemas";
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(request: NextRequest) {
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
   const body = await request.json();
   const validation = taskSchema.safeParse(body);
   if (!validation.success) {
     return NextResponse.json(validation.error.format(), { status: 400 });
   }
 
-  const newTask = await prisma.task.create({
+  const { id } = await params;
+  const task = await prisma.task.findUnique({
+    where: { id: parseInt(id) },
+  });
+
+  if (!task) {
+    return NextResponse.json({ error: "Task not found" }, { status: 404 });
+  }
+
+  const updatedTask = await prisma.task.update({
+    where: { id: task.id },
     data: {
       title: body.title,
       description: body.description,
     },
   });
 
-  return NextResponse.json(newTask, { status: 201 });
+  return NextResponse.json(updatedTask);
 }
