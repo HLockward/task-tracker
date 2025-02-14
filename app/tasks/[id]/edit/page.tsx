@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import TaskForm from "../../_components/TaskForm";
 
 interface Props {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 const EditTaskPage = async ({ params }: Props) => {

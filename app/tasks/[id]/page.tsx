@@ -5,7 +5,7 @@ import EditTaskButton from "./EditTaskButton";
 import TaskDetails from "./TaskDetails";
 
 interface Props {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 const TaskDetailPage = async ({ params }: Props) => {
