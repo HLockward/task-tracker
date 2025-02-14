@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
-import TaskForm from "../../_components/TaskForm";
+import TaskForm from "@/app/tasks/_components/TaskForm";
 
 interface Props {
   params: Promise<{ id: string }>;
