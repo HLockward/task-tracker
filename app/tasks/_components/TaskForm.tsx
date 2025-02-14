@@ -36,11 +36,13 @@ const TaskForm = ({ task }: { task?: Task }) => {
   const onSubmit = handleSubmit(async (data) => {
     try {
       setLoading(true);
-      await axios.post("/api/tasks", data);
+      if (task) await axios.patch(`/api/tasks/${task.id}`, data);
+      else await axios.post("/api/tasks", data);
       router.push("/tasks");
     } catch (error) {
       setLoading(false);
       setError("An error occurred. Please try again later.");
+      console.log(error);
     }
   });
 
@@ -69,7 +71,7 @@ const TaskForm = ({ task }: { task?: Task }) => {
         <ErrorMessage>{errors.description?.message}</ErrorMessage>
 
         <Button disabled={loading}>
-          Submit New Task {loading && <Spinner />}
+          {task ? "Update task" : "Submit New Task"} {loading && <Spinner />}
         </Button>
       </form>
     </div>
