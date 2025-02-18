@@ -1,3 +1,4 @@
+import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { Box, Flex, Grid } from "@radix-ui/themes";
 import { notFound } from "next/navigation";
@@ -10,6 +11,7 @@ interface Props {
 }
 
 const TaskDetailPage = async ({ params }: Props) => {
+  const session = await auth();
   const { id } = await params;
   const task = await prisma.task.findUnique({
     where: { id: parseInt(id) },
@@ -22,12 +24,14 @@ const TaskDetailPage = async ({ params }: Props) => {
       <Box className="md:col-span-4">
         <TaskDetails task={task} />
       </Box>
-      <Box>
-        <Flex direction="column" gap="4">
-          <EditTaskButton taskId={task.id} />
-          <DeleteTaskButton taskId={task.id} />
-        </Flex>
-      </Box>
+      {session && (
+        <Box>
+          <Flex direction="column" gap="4">
+            <EditTaskButton taskId={task.id} />
+            <DeleteTaskButton taskId={task.id} />
+          </Flex>
+        </Box>
+      )}
     </Grid>
   );
 };
