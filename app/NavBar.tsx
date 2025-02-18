@@ -1,5 +1,5 @@
 "use client";
-import { Box } from "@radix-ui/themes";
+import { Box, Container, Flex } from "@radix-ui/themes";
 import classnames from "classnames";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
@@ -15,33 +15,39 @@ const NavBar = () => {
   ];
 
   return (
-    <nav className="flex space-x-6 border-b mb-5 px-5 h-14 items-center">
-      <Link href="/">
-        <BiTaskX />
-      </Link>
-      <ul className="flex space-x-6">
-        {links.map((link) => (
-          <li key={link.href}>
-            <Link
-              href={link.href}
-              className={classnames({
-                "text-zinc-900": pathName === link.href,
-                "text-zinc-500": pathName !== link.href,
-                "hover:text-zinc-800 transition-colors": true,
-              })}
-            >
-              {link.name}
+    <nav className="border-b mb-5 px-5 py-3">
+      <Container>
+        <Flex justify="between">
+          <Flex align="center" gap="3">
+            <Link href="/">
+              <BiTaskX />
             </Link>
-          </li>
-        ))}
-      </ul>
-      <Box>
-        {status === "authenticated" ? (
-          <Link href="/api/auth/signout">Sign Out</Link>
-        ) : (
-          <Link href="/api/auth/signin">Sign In</Link>
-        )}
-      </Box>
+            <ul className="flex space-x-6">
+              {links.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className={classnames({
+                      "text-zinc-900": pathName === link.href,
+                      "text-zinc-500": pathName !== link.href,
+                      "hover:text-zinc-800 transition-colors": true,
+                    })}
+                  >
+                    {link.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </Flex>
+          <Box>
+            {status === "authenticated" ? (
+              <Link href="/api/auth/signout">Sign Out</Link>
+            ) : (
+              <Link href="/api/auth/signin">Sign In</Link>
+            )}
+          </Box>
+        </Flex>
+      </Container>
     </nav>
   );
 };
