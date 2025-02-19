@@ -1,17 +1,33 @@
-import { prisma } from "@/lib/prisma";
+"use client";
+import Skeleton from "@/app/components/Skeleton";
+import { User } from "@prisma/client";
 import { Select } from "@radix-ui/themes";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
-const AssigneeSelect = async () => {
-  const users = await prisma.user.findMany({
-    select: { id: true, name: true },
+const AssigneeSelect = () => {
+  const {
+    data: users,
+    error,
+    isLoading,
+  } = useQuery<User[]>({
+    queryKey: ["users"],
+    queryFn: () => axios.get("/api/user").then((res) => res.data),
+    staleTime: 1000 * 60, // 1 minute
+    retry: 3,
   });
+
+  if (isLoading) return <Skeleton />;
+
+  if (error) return null;
+
   return (
     <Select.Root>
       <Select.Trigger placeholder="Assign..." />
       <Select.Content>
         <Select.Group>
           <Select.Label>Suggestions</Select.Label>
-          {users.map((user) => (
+          {users?.map((user) => (
             <Select.Item key={user.id} value={user.id}>
               {user.name}
             </Select.Item>
