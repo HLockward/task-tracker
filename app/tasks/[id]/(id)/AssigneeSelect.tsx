@@ -7,35 +7,28 @@ import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 
 const AssigneeSelect = ({ task }: { task: Task }) => {
-  const {
-    data: users,
-    error,
-    isLoading,
-  } = useQuery<User[]>({
-    queryKey: ["users"],
-    queryFn: () => axios.get("/api/user").then((res) => res.data),
-    staleTime: 1000 * 60, // 1 minute
-    retry: 3,
-  });
+  const { data: users, error, isLoading } = useUsers();
 
   if (isLoading) return <Skeleton />;
 
   if (error) return null;
 
+  const assignTask = (userId: string) => {
+    const assignedToUserId = userId === "Unassigned" ? null : userId;
+    axios
+      .patch(`/api/tasks/${task.id}`, {
+        assignedToUserId,
+      })
+      .catch(() => {
+        toast.error("Failed to assign task");
+      });
+  };
+
   return (
     <>
       <Select.Root
         defaultValue={task.assignedToUserId || ""}
-        onValueChange={(userId) => {
-          const assignedToUserId = userId === "Unassigned" ? null : userId;
-          axios
-            .patch(`/xapi/tasks/${task.id}`, {
-              assignedToUserId,
-            })
-            .catch(() => {
-              toast.error("Failed to assign task");
-            });
-        }}
+        onValueChange={assignTask}
       >
         <Select.Trigger placeholder="Assign..." />
         <Select.Content>
@@ -54,5 +47,13 @@ const AssigneeSelect = ({ task }: { task: Task }) => {
     </>
   );
 };
+
+const useUsers = () =>
+  useQuery<User[]>({
+    queryKey: ["users"],
+    queryFn: () => axios.get("/api/user").then((res) => res.data),
+    staleTime: 1000 * 60, // 1 minute
+    retry: 3,
+  });
 
 export default AssigneeSelect;
