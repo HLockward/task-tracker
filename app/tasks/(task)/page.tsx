@@ -1,10 +1,24 @@
 import { Link, TaskStatusBadge } from "@/app/components";
 import { prisma } from "@/lib/prisma";
+import { Status } from "@prisma/client";
 import { Table } from "@radix-ui/themes";
 import TaskActions from "./TaskActions";
 
-const Tasks = async () => {
-  const tasks = await prisma.task.findMany();
+interface Props {
+  searchParams: {
+    status: Status;
+  };
+}
+
+const Tasks = async ({ searchParams }: Props) => {
+  const { status } = await searchParams;
+  const statuses = Object.values(Status);
+  const statusFilter = statuses.includes(status) ? status : undefined;
+  const tasks = await prisma.task.findMany({
+    where: {
+      status: statusFilter,
+    },
+  });
 
   return (
     <div>
