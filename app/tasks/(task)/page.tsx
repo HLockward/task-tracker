@@ -1,17 +1,26 @@
 import { Link, TaskStatusBadge } from "@/app/components";
 import { prisma } from "@/lib/prisma";
-import { Status } from "@prisma/client";
+import { Status, Task } from "@prisma/client";
+import { ArrowUpIcon } from "@radix-ui/react-icons";
 import { Table } from "@radix-ui/themes";
+import NextLink from "next/link";
 import TaskActions from "./TaskActions";
 
 interface Props {
   searchParams: {
     status: Status;
+    orderBy: keyof Task;
   };
 }
 
+const columns: { label: string; value: keyof Task; className?: string }[] = [
+  { label: "Task", value: "title" },
+  { label: "Status", value: "status", className: "hidden md:table-cell" },
+  { label: "Created", value: "createdAt", className: "hidden md:table-cell" },
+];
+
 const Tasks = async ({ searchParams }: Props) => {
-  const { status } = await searchParams;
+  const { status, orderBy } = await searchParams;
   const statuses = Object.values(Status);
   const statusFilter = statuses.includes(status) ? status : undefined;
   const tasks = await prisma.task.findMany({
@@ -20,19 +29,30 @@ const Tasks = async ({ searchParams }: Props) => {
     },
   });
 
+  const queryString = (status: Status, orderBy: keyof Task) => {
+    if (status) {
+      return `/tasks?status=${status}&orderBy=${orderBy}`;
+    }
+    return `/tasks?orderBy=${orderBy}`;
+  };
+
   return (
     <div>
       <TaskActions />
       <Table.Root variant="surface">
         <Table.Header>
           <Table.Row>
-            <Table.ColumnHeaderCell>Task</Table.ColumnHeaderCell>
-            <Table.ColumnHeaderCell className="hidden md:table-cell">
-              Status
-            </Table.ColumnHeaderCell>
-            <Table.ColumnHeaderCell className="hidden md:table-cell">
-              Created
-            </Table.ColumnHeaderCell>
+            {columns.map((column) => (
+              <Table.ColumnHeaderCell
+                key={column.value}
+                className={column.className}
+              >
+                <NextLink href={queryString(status, column.value)}>
+                  {column.label}
+                </NextLink>
+                {column.value === orderBy && <ArrowUpIcon className="inline" />}
+              </Table.ColumnHeaderCell>
+            ))}
           </Table.Row>
         </Table.Header>
         <Table.Body>
