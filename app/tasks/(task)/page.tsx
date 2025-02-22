@@ -21,12 +21,19 @@ const columns: { label: string; value: keyof Task; className?: string }[] = [
 
 const Tasks = async ({ searchParams }: Props) => {
   const { status, orderBy } = await searchParams;
+
   const statuses = Object.values(Status);
   const statusFilter = statuses.includes(status) ? status : undefined;
+
+  const orderByKeys = columns.map((column) => column.value).includes(orderBy)
+    ? { [orderBy]: "asc" }
+    : undefined;
+
   const tasks = await prisma.task.findMany({
     where: {
       status: statusFilter,
     },
+    orderBy: orderByKeys,
   });
 
   const queryString = (status: Status, orderBy: keyof Task) => {
