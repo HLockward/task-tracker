@@ -1,8 +1,9 @@
 import { Link, TaskStatusBadge } from "@/app/components";
+import Pagination from "@/app/components/Pagination";
 import { prisma } from "@/lib/prisma";
 import { Status, Task } from "@prisma/client";
 import { ArrowUpIcon } from "@radix-ui/react-icons";
-import { Table } from "@radix-ui/themes";
+import { Flex, Table } from "@radix-ui/themes";
 import NextLink from "next/link";
 import TaskActions from "./TaskActions";
 
@@ -10,6 +11,7 @@ interface Props {
   searchParams: {
     status: Status;
     orderBy: keyof Task;
+    page: string;
   };
 }
 
@@ -20,20 +22,27 @@ const columns: { label: string; value: keyof Task; className?: string }[] = [
 ];
 
 const Tasks = async ({ searchParams }: Props) => {
-  const { status, orderBy } = await searchParams;
+  const { status, orderBy, page } = await searchParams;
 
   const statuses = Object.values(Status);
   const statusFilter = statuses.includes(status) ? status : undefined;
+  const where = { status: statusFilter };
 
   const orderByKeys = columns.map((column) => column.value).includes(orderBy)
     ? { [orderBy]: "asc" }
     : undefined;
 
+  const currentPage = parseInt(page) || 1;
+  const pageSize = 10;
   const tasks = await prisma.task.findMany({
-    where: {
-      status: statusFilter,
-    },
+    where,
     orderBy: orderByKeys,
+    skip: (currentPage - 1) * pageSize,
+    take: pageSize,
+  });
+
+  const tasksCount = await prisma.task.count({
+    where,
   });
 
   const queryString = (status: Status, orderBy: keyof Task) => {
@@ -44,7 +53,7 @@ const Tasks = async ({ searchParams }: Props) => {
   };
 
   return (
-    <div>
+    <Flex gap="3" direction="column">
       <TaskActions />
       <Table.Root variant="surface">
         <Table.Header>
@@ -81,7 +90,12 @@ const Tasks = async ({ searchParams }: Props) => {
           ))}
         </Table.Body>
       </Table.Root>
-    </div>
+      <Pagination
+        itemCount={tasksCount}
+        pageSize={pageSize}
+        currentPage={currentPage}
+      />
+    </Flex>
   );
 };
 
