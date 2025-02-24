@@ -38,4 +38,15 @@ const TaskDetailPage = async ({ params }: Props) => {
   );
 };
 
+export async function generateMetadata({ params }: Props) {
+  const task = await prisma.task.findUnique({
+    where: { id: parseInt((await params).id) },
+  });
+
+  return {
+    title: task?.title,
+    description: `Details of task ${task?.id}`,
+  };
+}
+
 export default TaskDetailPage;

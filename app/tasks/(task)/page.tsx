@@ -4,6 +4,7 @@ import { Status } from "@prisma/client";
 import { Flex } from "@radix-ui/themes";
 import TaskActions from "./TaskActions";
 import TaskTable, { columnValues, taskQuery } from "./TaskTable";
+import { Metadata } from "next";
 
 interface Props {
   searchParams: taskQuery;
@@ -47,4 +48,10 @@ const Tasks = async ({ searchParams }: Props) => {
 };
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "Task Tracker - Task List",
+  description: "View all project tasks",
+};
+
 export default Tasks;
