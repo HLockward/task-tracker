@@ -2,6 +2,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { Box, Flex, Grid } from "@radix-ui/themes";
 import { notFound } from "next/navigation";
+import { cache } from "react";
 import AssigneeSelect from "./AssigneeSelect";
 import DeleteTaskButton from "./DeleteTaskButton";
 import EditTaskButton from "./EditTaskButton";
@@ -11,12 +12,14 @@ interface Props {
   params: Promise<{ id: string }>;
 }
 
+const fetchTask = cache((taskId: number) =>
+  prisma.task.findUnique({ where: { id: taskId } })
+);
+
 const TaskDetailPage = async ({ params }: Props) => {
   const session = await auth();
   const { id } = await params;
-  const task = await prisma.task.findUnique({
-    where: { id: parseInt(id) },
-  });
+  const task = await fetchTask(parseInt(id));
 
   if (!task) notFound();
 
@@ -39,9 +42,7 @@ const TaskDetailPage = async ({ params }: Props) => {
 };
 
 export async function generateMetadata({ params }: Props) {
-  const task = await prisma.task.findUnique({
-    where: { id: parseInt((await params).id) },
-  });
+  const task = await fetchTask(parseInt((await params).id));
 
   return {
     title: task?.title,
