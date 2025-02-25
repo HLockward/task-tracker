@@ -7,7 +7,7 @@ import TaskTable, { columnValues, taskQuery } from "./TaskTable";
 import { Metadata } from "next";
 
 interface Props {
-  searchParams: taskQuery;
+  searchParams: Promise<taskQuery>;
 }
 
 const Tasks = async ({ searchParams }: Props) => {
@@ -37,7 +37,7 @@ const Tasks = async ({ searchParams }: Props) => {
   return (
     <Flex gap="3" direction="column">
       <TaskActions />
-      <TaskTable tasks={tasks} searchParams={searchParams} />
+      <TaskTable tasks={tasks} searchParams={await searchParams} />
       <Pagination
         itemCount={tasksCount}
         pageSize={pageSize}

@@ -11,7 +11,7 @@ interface Props {
 const TaskSummary = ({ open, inProgress, done }: Props) => {
   const containers: {
     label: string;
-    value: Number;
+    value: number;
     status: Status;
   }[] = [
     { label: "Open Tasks", value: open, status: "OPEN" },
