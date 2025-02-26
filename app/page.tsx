@@ -26,6 +26,8 @@ const Home = async () => {
   );
 };
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Task Tracker - Dashboard",
   description: "View a summary of the project tasks",
