@@ -11,7 +11,7 @@ interface Props {
 
 const TaskChart = ({ open, inProgress, done }: Props) => {
   const data = [
-    { label: "Opne", value: open },
+    { label: "Open", value: open },
     { label: "In Progress", value: inProgress },
     { label: "Done", value: done },
   ];
